@@ -3,7 +3,7 @@ import { Search, Building2, FileAudio, Play, Download } from "lucide-react";
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [tenant, setTenant] = useState("meydan"); // NEW
+  const [tenant, setTenant] = useState("meydan");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -20,7 +20,11 @@ export default function App() {
       const baseUrl =
         tenant === "meydan"
           ? "http://localhost:9014"
-          : "http://localhost:9013"; // SPC backend port
+          : tenant === "spc"
+          ? "http://localhost:9013"
+          : tenant === "shams"
+          ? "http://localhost:9016"
+          : "http://localhost:9015"; // dubai-south
 
       const res = await fetch(
         `${baseUrl}/api/recording?filename=${encodeURIComponent(
@@ -35,17 +39,11 @@ export default function App() {
       } else {
         setError(
           data.message ||
-            `Recording not found in ${
-              tenant === "meydan" ? "Meydan" : "SPC"
-            } servers`
+            `Recording not found in ${tenant.replace("-", " ")} servers`
         );
       }
     } catch (err) {
-      setError(
-        `Backend not running for ${
-          tenant === "meydan" ? "Meydan (9012)" : "SPC (9022)"
-        }`
-      );
+      setError(`Backend not running for ${tenant.replace("-", " ")}`);
     } finally {
       setLoading(false);
     }
@@ -67,7 +65,7 @@ export default function App() {
             <p className="text-blue-100 text-sm">
               {tenant === "meydan"
                 ? "Searching Meydan (my01 → my04)"
-                : "Searching SPC Tenant Servers"}
+                : "Searching Tenant Servers"}
             </p>
           </div>
 
@@ -87,6 +85,8 @@ export default function App() {
               >
                 <option value="meydan">🏢 Meydan</option>
                 <option value="spc">🏢 SPC</option>
+                <option value="shams">🏢 Shams</option>
+                <option value="dubai-south">🏢 Dubai South</option>
               </select>
             </div>
 
@@ -111,7 +111,7 @@ export default function App() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Searching {tenant === "meydan" ? "Meydan" : "SPC"}...
+                  Searching {tenant.replace("-", " ").toUpperCase()}...
                 </span>
               ) : (
                 "🔍 Search"
@@ -179,6 +179,7 @@ export default function App() {
               </div>
             )}
           </div>
+
         </div>
       </div>
     </div>

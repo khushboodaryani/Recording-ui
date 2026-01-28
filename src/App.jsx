@@ -21,9 +21,9 @@ export default function App() {
         tenant === "meydan"
           ? "http://localhost:9014"
           : tenant === "spc"
-          ? "http://localhost:9013"
-          : tenant === "shams"
           ? "http://localhost:9016"
+          : tenant === "shams"
+          ? "http://localhost:9013"
           : "http://localhost:9015"; // dubai-south
 
       const res = await fetch(
